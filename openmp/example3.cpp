@@ -1,59 +1,20 @@
 /*
-Gyeonghun Kim (Mar. 13, 2022)
+Gyeonghun Kim (Mar. 31, 2022)
 Example code in PSC class
-compile: g++ hello.cpp -fopenmp -o hello.out
+compile: g++ example3.cpp -fopenmp -o example3.out
 
 ** result: 
-    4threads set by me
-    128 procs
-    4 max. threads
-    1 thread now
-    Fork!
-    Hello, I'm thread 0
-    0 / 4 = 0
-    Hello, I'm thread 3
-    3 / 4 = 0.75
-    Hello, I'm thread 1
-    1 / 4 = 0.25
-    Hello, I'm thread 2
-    2 / 4 = 0.5
-    Join!
+    Thread: 0
+    Thread: 1
+    Thread: 2
+    Thread: 9
+    Thread: 8
+    Thread: 6
+    Thread: 3
+    Thread: 4
+    Thread: 7
+    Thread: 5
 
-** result without critical:
-    4threads set by me
-    128 procs
-    4 max. threads
-    1 thread now
-    Fork!
-    Hello, I'm thread 0
-    Hello, I'm thread Hello, I'm thread 3
-    3 / 4 = 1
-    1 / 4 = Hello, I'm thread 20 / 4 = 0.75
-    0
-
-    2 / 4 = 0.25
-    0.5
-    Join!
-
-** result with omp_get_num_threads() inside:
-    4threads set by me
-    128 procs
-    4 max. threads
-    1 thread now
-    Fork!
-    4 thread now
-    Hello, I'm thread 0
-    0 / 4 = 0
-    4 thread now
-    Hello, I'm thread 3
-    3 / 4 = 0.75
-    4 thread now
-    Hello, I'm thread 2
-    2 / 4 = 0.5
-    4 thread now
-    Hello, I'm thread 1
-    1 / 4 = 0.25
-    Join!
 */
 
 #include <iostream>
@@ -61,38 +22,24 @@ compile: g++ hello.cpp -fopenmp -o hello.out
 
 int main()
 {
-    int id, N;
-    float fraction;
-    int check;
+    int id, N = 10;
+    omp_set_num_threads(N);
 
-    N = omp_get_max_threads();
-#pragma omp parallel for private(id) shared(check)
-    for (id = 0; id < N; ++id)
+#pragma omp parallel private(id)
     {
         id = omp_get_thread_num();
-        if (id == 0)
-        {
+#pragma omp master
 #pragma omp critical(printing)
-            {
-                // std::cout << omp_get_num_threads() << " thread now" << std::endl;
-                std::cout << "Hello, I'm thread " << id << std::endl;
-                check = 0;
-            }
+        {
+            std::cout << "Thread: " << id << std::endl;
         }
-        else
+#pragma omp barrier
+        if (id != 0)
         {
-            while (true)
-            {
-                if (not check)
-                {
 #pragma omp critical(printing)
-                    {
-                        std::cout << "Hello, I'm thread " << id << std::endl;
-                    }
-                    break;
-                }
+            {
+                std::cout << "Thread: " << id << std::endl;
             }
         }
     }
-    std::cout << "Join!" << std::endl;
 }

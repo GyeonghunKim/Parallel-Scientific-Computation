@@ -1,7 +1,7 @@
 /*
 Gyeonghun Kim (Mar. 13, 2022)
 Example code in PSC class
-compile: g++ hello.cpp -fopenmp -o hello.out
+compile: g++ example1.cpp -fopenmp -o example1.out
 
 ** result: 
     4threads set by me

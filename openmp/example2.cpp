@@ -1,7 +1,7 @@
 /*
 Gyeonghun Kim (Mar. 13, 2022)
 Example code for PSC class
-compile: g++ reduction_clause.cpp -fopenmp -o reduction_clause.out
+compile: g++ example2.cpp -fopenmp -o example2.out
 
 ** result: 
     0
